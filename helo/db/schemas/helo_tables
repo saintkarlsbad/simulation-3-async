@@ -1,0 +1,20 @@
+create table helo_users (
+    id SERIAL PRIMARY KEY, 
+    auth_id TEXT, 
+    first VARCHAR(20),
+    last VARCHAR(20),
+    gender VARCHAR(20),
+    hair_color VARCHAR(20),
+    eye_color VARCHAR(20),
+    hobby VARCHAR(20),
+    birth_date INTEGER,
+    birth_month VARCHAR(20),
+    birth_year INTEGER, 
+    img TEXT
+);
+
+
+CREATE TABLE helo_friends (
+    friend_id INTEGER, 
+    user_id INTEGER
+)

@@ -1,0 +1,20 @@
+INSERT INTO HELO_PROFILE (auth_id, first, last, gender, hair_color, eye_color, hobby, birth_date, birth_month, birth_year)
+VALUES ('hgirhgnkifgkv', 'jan', 'hanson', 'female', 'pink', 'blue', 'computing', '07', 'june', '1977')
+
+INSERT INTO HELO_PROFILE (auth_id, first, last, gender, hair_color, eye_color, hobby, birth_date, birth_month, birth_year)
+VALUES ('asfgvcertgn', 'judy', 'hatch', 'female', 'green', 'blue', 'computing', '07', 'june', '1977')
+
+INSERT INTO HELO_PROFILE (auth_id, first, last, gender, hair_color, eye_color, hobby, birth_date, birth_month, birth_year)
+VALUES ('hdgerythgfd', 'julie', 'hooper', 'female', 'pink', 'blue', 'computing', '07', 'june', '1977')
+
+INSERT INTO HELO_PROFILE (auth_id, first, last, gender, hair_color, eye_color, hobby, birth_date, birth_month, birth_year)
+VALUES ('mjkloijklo', 'jane', 'hope', 'female', 'purple', 'blue', 'computing', '07', 'june', '1977')
+
+INSERT INTO HELO_PROFILE (auth_id, first, last, gender, hair_color, eye_color, hobby, birth_date, birth_month, birth_year)
+VALUES ('uyt567yhgf', 'jordan', 'hooter', 'male', 'pink', 'blue', 'computing', '07', 'june', '1977')
+
+INSERT INTO HELO_PROFILE (auth_id, first, last, gender, hair_color, eye_color, hobby, birth_date, birth_month, birth_year)
+VALUES ('fr456yhgf', 'jo', 'hamilton', 'male', 'orange', 'blue', 'computing', '07', 'june', '1977')
+
+INSERT INTO HELO_PROFILE (auth_id, first, last, gender, hair_color, eye_color, hobby, birth_date, birth_month, birth_year)
+VALUES ('aq21wed', 'jennifer', 'heffer', 'female', 'pink', 'blue', 'computing', '07', 'june', '1977')
