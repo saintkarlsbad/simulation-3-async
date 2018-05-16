@@ -93,11 +93,6 @@ app.get('/auth/authenticated', (req, res)=> {
     } // 401 code means not authorized
 })
 
-app.get('/auth/logout', (req, res)=> {
-    req.logOut();
-    res.redirect('http://localhost:3000/#/')
-})
-
 
 /// ========== CONTROLLER ========== ///
 // checkLoggedIn file in controller
@@ -129,7 +124,7 @@ app.put('/api/profile/update', controller.updateUser)
 //Updates a user's attribute(s).
 //Sends a status of 200 and the updated user object
 
-app.get('/api/profile/list', controller.getFriendsList)
+app.get('/api/profile/list', controller.getProfileList)
 // returns a list of 24 users
 // This endpoint should count how many users there are, not including the logged in user.
 // This endpoint should calculate how many available pages there are for pagination.
@@ -138,8 +133,6 @@ app.get('/api/profile/list', controller.getFriendsList)
 // Hint: Query offsets and limits.
 // Sends a status of 200 with the user count, number of pagination pages, and 24 user objects
 
-app.get('/api/profile/count', controller.userCount)
-
 // app.get('/api/profile/search', controller.searchProfile)
 // Return all users that meet the search criteria.
 // Sends a status of 200 and all the users that meet the criteria
@@ -147,19 +140,22 @@ app.get('/api/profile/count', controller.userCount)
 
 // ===== Recommended Endpoints ===== //
 
-app.post('/api/recommended', controller.getRecommended)
+app.get('/api/recommended', controller.getRecommended)
 // Return a list of user's with the same property ( first name, hobby, etc..).
 // Sends a status of 200 and a list of user objects.
 // The logged in user shouldn't appear in this list
 
-// app.post('/api/recommended/add') -->
+
 // Adds friend then updates recommended list.
 // When a user gets added, that user should no longer appear in the recommended area until that user is unfriended.
 //Sends a status of 200 and an updated list of user objects.
 // For example: If recommendations are being shown off of the same first name, 
 // the endpoint should re-run the query to find all recommended users with the same first name again.
 
-
+app.get('/auth/logout', (req, res)=> {
+    req.logOut();
+    res.redirect('http://localhost:3000/#/')
+})
 
 massive(process.env.CONNECTION_STRING).then(db => {
     console.log('--- database connected ---')

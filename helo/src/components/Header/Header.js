@@ -17,15 +17,14 @@ export default function Header ({page}) {
                         <span className='header_page open-sans'> {page} </span>
                     </div>
                     <div className='header_child_right'>
-                        <a href='http://localhost:3030/auth/logout'><button className='header_logout open-sans' >Logout</button></a>
+                        <a href='http://localhost:3030/auth/logout'><button className='header_logout open-sans black-btn' >Logout</button></a>
                     </div>
                 </div>
             </div>
         )
 }
 
-    
-// onClick={() => this.logout(history)}
+
   
 
 

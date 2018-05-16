@@ -68,3 +68,19 @@
     width: 130px;
     margin-bottom:10px;
 }
+
+.profile_content {
+    width: 390px;
+    height: 100px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.friend_name {
+    margin-left: 10px;
+    margin-right: 10px;
+    display: block;
+}

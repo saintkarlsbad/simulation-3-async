@@ -3,10 +3,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import axios from 'axios';
-//import { connect } from 'react-redux';
-//import { getUser, user} from './../../ducks/reducer';
 import './Dashboard.css';
-// import 'https://robohash.org/'
 
 export default class Dashboard extends Component {
     constructor(props) {
@@ -14,16 +11,17 @@ export default class Dashboard extends Component {
         this.state = {
             userData: {},
             recommendedFriends: [],
-            filterBy: '',
             sortValue: ''
         }
         this.addFriend = this.addFriend.bind(this);
     }
 
+
+    // getting user authentication(req.user) from server and recommended from db
     componentDidMount() {
-        
+
         axios.get('/auth/authenticated').then(user => {
-            this.setState({userData: user.data})
+            this.setState({ userData: user.data })
         })
 
         axios.get('/api/recommended').then(res => {
@@ -33,35 +31,66 @@ export default class Dashboard extends Component {
         })
     }
 
-    addFriend(val) {
-        axios.post('/api/friend/add', { val }).then(res => {
+    // adding friend/assigning a friendId (set up in controller file) then returning recommended friends (all users that aren't friends or current user)
+    addFriend(friendId) {
+        axios.post('/api/friend/add', { friendId }).then(res => {
             axios.get('/api/recommended').then(res => {
-                this.setState({ userData: res.data })
+                this.setState({ recommendedFriends: res.data })
             })
         })
     }
 
     render() {
-        console.log(this.state.userData, this.state.recommendedFriends)
-        const {userData} = this.state
-        const { sortValue } = this.state;
-        // if (userData) {
-        //     var userinfo = this.state.userData.filter(bots => bots[sortValue] === userData[sortValue] && bots.id !== userData.id)
-        //     var userBoxes = userinfo.map((bots, i) => {
-        //         return (
-        //             <div key={i} className='friend_box'>
-        //                 <img width="100px" src={bots.img} alt='pic' />
+        
+        const { userData, sortValue, recommendedFriends } = this.state
+        // assign sort option from recommended list to users data to see if there is a mutual sort option 
+        const recommendedFiltered = recommendedFriends.filter(el => {
+            if (sortValue === 'first') {
+                return el.first === userData.first
+            }
+            if (sortValue === 'last') {
+                return el.last === userData.last
+            }
+            if (sortValue === "hobby") {
+                return el.hobby === userData.hobby
+            }
+            if (sortValue === 'gender') {
+                return el.gender === userData.gender
+            }
+            if (sortValue === 'h_color') {
+                return el.hair_color === userData.hair_color
+            }
+            if (sortValue === 'e_color') {
+                return el.eye_color === userData.eye_color
+            }
+            if (sortValue === 'birthday') {
+                return (el.birth_day === userData.birth_day && el.birth_month === userData.birth_month && el.birth_year === userData.birth_year)
+            }
+            if (sortValue === '') {
+                return userData;
+            }
+        })
 
-        //                 <div className="friend_names">
-        //                     <span>{bots.first_name} </span>
-        //                     <span>{bots.last_name}</span>
-        //                 </div>
 
-        //                 <button className="friend_button" onClick={() => this.addFriend(bots.id)}>add friend</button>
-        //             </div>
-        //         )
-        //     })
-        // }
+        // taking filtered from above and reassigning so that you can add a friend to the logged in user's id (will assign a friend_id)
+        const listedBots = recommendedFiltered.map((user, i) => {
+            //console.log(user)
+            return (
+
+                <div key={i} className='rec_content content-container'>
+                    <div className='rec_left'>
+                        <img width='100px' src={user.img} alt='profile' />
+                    </div>
+                    <div className='friend_name open-sans-bold'>
+                        <h3>{user.first}</h3>
+                        <h3>{user.last}</h3>
+                    </div>
+                    <button className='add_btn orange-btn' onClick={() => this.addFriend(user.id)}> Add Friend </button>
+                </div>
+            )
+        })
+
+        // based on user's auth_id, will assign name and pic to go with it
         return (
             <div style={{ height: 'auto' }}>
                 <Header page='Dashboard' />
@@ -70,7 +99,7 @@ export default class Dashboard extends Component {
                         <div className='dash_child_top'>
                             <div className='user_box'>
                                 <span className='user_left'>
-                                    {userData.auth_id ? <img src={'https://robohash.org/me'} className='user_image' alt='profile' /> : null}
+                                    {userData.auth_id ? <img src={this.state.userData.img} className='user_image' alt='profile' /> : null}
                                 </span>
                                 <span className='user_right'>
                                     {userData.auth_id ? <span className='usr_first open-sans-bold'> {userData.first} </span> : null}
@@ -88,6 +117,7 @@ export default class Dashboard extends Component {
                                     <span className='recommend_span_h open-sans'>Recommended Friends</span>
                                     <span className='recommend_span_s open-sans'>Sorted by</span>
                                     <select className='dash_select open-sans' onChange={(e) => this.setState({ sortValue: e.target.value })}>
+                                        <option value={''}>------------</option>
                                         <option value='first'> First Name </option>
                                         <option value='last'> Last Name </option>
                                         <option value='gender'> Gender </option>
@@ -99,20 +129,9 @@ export default class Dashboard extends Component {
                                 </div>
 
                                 <div className='dash_rec_usr_p'>
-                                    {/* <div className='dash_rec_usr_c'>
-                                        <div className='rec_content content-container'>
-
-                                            <img width='100px' src='https://robohash.org/me' alt='profile' />
-                                         <span className='friend_name open-sans-bold'></span>
-                                            <button className='add_btn orange-btn' onClick={() => { this.addFriend }}> Add Friend </button>
-
-                                        </div>
+                                    <div className='dash_rec_usr_c'>
+                                        {listedBots}
                                     </div>
-
-                                    <div className='dash_usr_empty'>
-                                        <span className='open-sans'> No recommendations </span>
-                                    </div> */}
-                                    {/* {userBoxes} */}
                                 </div>
                             </div>
                         </div>
@@ -124,34 +143,5 @@ export default class Dashboard extends Component {
     }
 }
 
-// function MapStateToProps(state) {
-//     return {user: state.user}
-// }
-
-// export default connect(MapStateToProps, { getUser })(Dashboard);
-
-// onClick event for 'Add Friend' button --> send info to helo_friends db --> automatically reload page w/ new friend
-
-/// CSS ///
-// .overflow-scrolling {
-//     overflow-y: scroll;
-//     -webkit-overflow-scrolling: touch;
-// }
 
 
-/// JSX ///
-// import OverflowScrolling from 'react-overflow-scrolling';
-
-// class MyComponent extends React.Component {
-//     render() {
-//         return (
-//             <div>
-//                 <OverflowScrolling className='overflow-scrolling'>
-//                     ...
-//                 </OverflowScrolling>
-//             </div>
-//         );
-//     }
-// }
-
-// export default MyComponent;

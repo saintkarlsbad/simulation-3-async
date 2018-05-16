@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { connect } from 'react-redux';
-// import { updateFirstName, updateLastName, updateGender, updateHairColor, updateEyeColor, updateHobby, updateBirthDate, updateBirthMonth, updateBirthYear, cancel } from '../../ducks/reducer';
 import Header from '../Header/Header';
 import './Profile.css';
-// import robohash web page
 
 export default class Profile extends Component {
     constructor(props) {
@@ -12,136 +9,139 @@ export default class Profile extends Component {
         this.state = {
             userData: {},
             userInfo: [],
-            firstName: '', 
-            lastName: '', 
-            profileGender: '', 
-            hairColor: '', 
-            eyeColor: '', 
-            profileHobby: '', 
-            bDate: '', 
-            bMonth: '', 
+            firstName: '',
+            lastName: '',
+            profileGender: '',
+            hairColor: '',
+            eyeColor: '',
+            profileHobby: '',
+            bDate: '',
+            bMonth: '',
             bYear: ''
         }
         this.updateProfile = this.updateProfile.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.cancel = this.cancel.bind(this);
     }
 
+    // assigning userData based on authentication of user or not
+    // getting one user and assigning profile info to each element from database
     componentDidMount() {
 
         axios.get('/auth/authenticated').then(user => {
-            this.setState({userData: user.data})
+            this.setState({ userData: user.data })
         })
 
+        // assigning state to res.data
         axios.get('/api/getUser').then(res => {
-            const { firstName, lastName, profileGender, hairColor, eyeColor, profileHobby, bDate, bMonth, bYear } = res.data[0];
             this.setState({
-                firstName: res.data.first || '', 
-                lastName: res.data.last || '', 
-                profileGender: res.data.gender || '', 
-                hairColor: res.data.hair_color || '', 
-                eyeColor: res.data.eye_color || '', 
-                profileHobby: res.data.hobby || '', 
-                bDate: res.data.birth_date || '', 
-                bMonth: res.data.birth_month || '' ,
-                bYear: res.data.birth_year || ''
+                firstName: res.data[0].first,
+                lastName: res.data[0].last,
+                profileGender: res.data[0].gender,
+                hairColor: res.data[0].hair_color,
+                eyeColor: res.data[0].eye_color,
+                profileHobby: res.data[0].hobby,
+                bDate: res.data[0].birth_date,
+                bMonth: res.data[0].birth_month,
+                bYear: res.data[0].birth_year 
             })
         }).catch(() => { this.props.history.push('/') })
     }
 
     updateProfile() {
         const { firstName, lastName, profileGender, hairColor, eyeColor, profileHobby, bDate, bMonth, bYear } = this.state;
-        console.log(this.props)
+        console.log(this.state)
         axios.put('/api/profile/update', {
-            firstName, 
-            lastName, 
-            profileGender, 
-            hairColor, 
-            eyeColor, 
-            profileHobby, 
-            bDate, 
-            bMonth, 
+            firstName,
+            lastName,
+            profileGender,
+            hairColor,
+            eyeColor,
+            profileHobby,
+            bDate,
+            bMonth,
             bYear
-           
+
         }).then(res => {
-             this.setState({
-                 
-                userInfo: res.data[0], 
-                firstName: res.data.first || '', 
-                lastName: res.data.last || '', 
-                profileGender: res.data.gender || '', 
-                hairColor: res.data.hair_color || '', 
-                eyeColor: res.data.eye_color || '', 
-                profileHobby: res.data.hobby || '', 
-                bDate: res.data.birth_date || '', 
-                bMonth: res.data.birth_month || '' ,
+            this.setState({
+
+                userInfo: res.data[0],
+                firstName: res.data.first || '',
+                lastName: res.data.last || '',
+                profileGender: res.data.gender || '',
+                hairColor: res.data.hair_color || '',
+                eyeColor: res.data.eye_color || '',
+                profileHobby: res.data.hobby || '',
+                bDate: res.data.birth_date || '',
+                bMonth: res.data.birth_month || '',
                 bYear: res.data.birth_year || ''
             })
             this.props.history.push('/Dashboard')
-        }) 
+        })
     }
 
+    // handleChange val, val2 setup in controller
     handleChange(val, val2) {
-        this.setState({[val2] : val})
+        this.setState({ [val2]: val })
     }
     cancel() {
-        const {user} = this.state;
-        const {first, last, gender, hair_color, eye_color, hobby, birth_date, birth_month, birth_year} = user[0];
-        
+        const { userData } = this.state;
+        const { first, last, gender, hair_color, eye_color, hobby, birth_date, birth_month, birth_year } = userData;
+
         this.setState({
 
-                firstName: first || '', 
-                lastName: last || '', 
-                profileGender: gender || '', 
-                hairColor: hair_color || '', 
-                eyeColor: eye_color || '', 
-                profileHobby: hobby || '', 
-                bDate: birth_date || '', 
-                bMonth: birth_month || '' ,
-                bYear: birth_year || ''
+            firstName: first || '',
+            lastName: last || '',
+            profileGender: gender || '',
+            hairColor: hair_color || '',
+            eyeColor: eye_color || '',
+            profileHobby: hobby || '',
+            bDate: birth_date || '',
+            bMonth: birth_month || '',
+            bYear: birth_year || ''
         })
-        
+        this.props.history.push('/Dashboard')
     }
 
     render() {
-        console.log(this.state.userInfo, 'profile info')
-        const {firstName, lastName, profileGender, hairColor, eyeColor, profileHobby, bDate, bMonth, bYear} = this.state;
+        console.log(this.state.userData, 'profile info')
         return (
             <div style={{ minHeight: '100vh' }}>
                 <Header page='Profile' />
                 <div className='profile_parent'>
                     <div className='profile_child'>
                         <div className='profile_usr_top content-container'>
-                            <img className='profile_img' alt='profile_pic' />
+                            <img src={this.state.userData.img} className='profile_img' alt='profile_pic' />
                             <div className='usernamebox open-sans-bold'>
-                                {this.state.userData.auth_id 
-                                ? 
-                                <span className='name'> {this.state.userData.first} 
-                                {this.state.userData.last} </span> 
-                                : 
-                                null}
+                                {this.state.userData.auth_id
+                                    ?
+                                    <span className='name'> {this.state.userData.first}
+                                        {this.state.userData.last} </span>
+                                    :
+                                    null}
                             </div>
                             <div className='usr_btns'>
                                 <button className='profile_btn black-btn' onClick={() => { this.updateProfile() }} >Update</button>
-                                <button className='profile_btn grey-btn'>Cancel</button>
+                                <button className='profile_btn grey-btn' onClick={() => { this.cancel() }}>Cancel</button>
                             </div>
                         </div>
 
                         <div className='profile_bottom content-container'>
                             <div className='profile_bottom_child'>
                                 <span className='name_span open-sans' > First Name </span>
-                                <input className='input' onChange={(e) => this.handleChange(e.target.value, 'firstName')}/>
+                                <input value={this.state.firstName} className='input' onChange={(e) => this.handleChange(e.target.value, 'firstName')} />
                                 <span className='name_span open-sans' > Last Name </span>
-                                <input className='input' onChange={(e) => this.handleChange(e.target.value, 'lastName')}/>
+                                <input value={this.state.lastName} className='input' onChange={(e) => this.handleChange(e.target.value, 'lastName')} />
 
                                 <span className='open-sans'> Gender </span>
-                                <select className='select' onChange={(e) => this.handleChange(e.target.value, 'gender')}>
+                                <select value={this.state.profileGender} className='select' onChange={(e) => this.handleChange(e.target.value, 'profileGender')}>
                                     <option disabled=''> -- Select -- </option>
                                     <option> Male </option>
                                     <option> Female </option>
                                     <option> Agender </option>
                                 </select>
                                 <span className='open-sans'> Hair Color </span>
-                                <select className='select' onChange={(e) => this.handleChange(e.target.value, 'hairColor')}>
+                                <select value={this.state.hairColor} className='select' onChange={(e) => this.handleChange(e.target.value, 'hairColor')}>
                                     <option disabled=''> -- Select -- </option>
                                     <option> Green </option>
                                     <option> Pink </option>
@@ -151,14 +151,14 @@ export default class Profile extends Component {
                                 </select>
                                 <br />
                                 <span className='open-sans'> Eye Color </span>
-                                <select className='select' onChange={(e) => this.handleChange(e.target.value, 'eyeColor')}>
+                                <select value={this.state.eyeColor} className='select' onChange={(e) => this.handleChange(e.target.value, 'eyeColor')}>
                                     <option disabled=''> -- Select -- </option>
                                     <option> Blue </option>
                                     <option> Green </option>
                                     <option> Silver </option>
                                 </select >
-                                <span className='open-sans' onChange={(e) => this.handleChange(e.target.value, 'hobby')}> Hobby </span>
-                                <select className='select'>
+                                <span className='open-sans' > Hobby </span>
+                                <select value={this.state.profileHobby} className='select' onChange={(e) => this.handleChange(e.target.value, 'profileHobby')}>
                                     <option disabled=''> -- Select -- </option>
                                     <option> Computing </option>
                                     <option> Debugging </option>
@@ -167,7 +167,7 @@ export default class Profile extends Component {
                                 </select>
                                 <br />
                                 <span className='open-sans'> Birth Date </span>
-                                <select className='select' onChange={(e) => this.handleChange(e.target.value, 'bDate')}>
+                                <select value={this.state.bDate} className='select' onChange={(e) => this.handleChange(e.target.value, 'bDate')}>
                                     <option disabled=''> -- Select -- </option>
                                     <option> 01 </option>
                                     <option> 02 </option>
@@ -202,7 +202,7 @@ export default class Profile extends Component {
                                     <option> 31 </option>
                                 </select>
                                 <span className='open-sans'> Birth Month </span>
-                                <select className='select' onChange={(e) => this.handleChange(e.target.value, 'bMonth')}>
+                                <select value={this.state.bMonth} className='select' onChange={(e) => this.handleChange(e.target.value, 'bMonth')}>
                                     <option disabled=''> -- Select -- </option>
                                     <option> January </option>
                                     <option> February </option>
@@ -218,7 +218,7 @@ export default class Profile extends Component {
                                     <option> December </option>
                                 </select>
                                 <span className='open-sans'> Birth Year </span>
-                                <select className='select' onChange={(e) => this.handleChange(e.target.value, 'bYear')}>
+                                <select value={this.state.bYear} className='select' onChange={(e) => this.handleChange(e.target.value, 'bYear')}>
                                     <option disabled=''> -- Select -- </option>
                                     <option> 2000 </option>
                                     <option> 1999 </option>
