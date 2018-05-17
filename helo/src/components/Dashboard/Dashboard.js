@@ -28,6 +28,8 @@ export default class Dashboard extends Component {
             this.setState({
                 recommendedFriends: res.data
             })
+        }).catch(response => {
+            console.log('cant get ya authorized boi')
         })
     }
 

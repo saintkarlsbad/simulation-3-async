@@ -84,6 +84,7 @@ app.get('/auth/callback', passport.authenticate('auth0', { //if they are logged 
     successRedirect: 'http://localhost:3000/#/Dashboard',
     failureRedirect: 'http://localhost:3000/#/'
 }))
+// is there a problem here? ^^ because it keeps new registered users logged in even when logged out the session ends.... cookies being stored forever and ever, maybe? 
 
 app.get('/auth/authenticated', (req, res)=> {
     if (req.user) {
@@ -91,17 +92,13 @@ app.get('/auth/authenticated', (req, res)=> {
     } else {
         res.status(401).send('Nice try, dumbass')
     } // 401 code means not authorized
+    console.log(req.user, 'thou hast been granted authorization')
 })
-
-
-/// ========== CONTROLLER ========== ///
-// checkLoggedIn file in controller
-
 
 
 // ===== Friend Endpoints ===== //
 
-app.get('/api/friend/list', controller.getFriends);
+//app.get('/api/friend/list', controller.getFriends);
 // Lists all friends of the logged in user. 
 //Sends a status of 200 and a list of user IDs that are friends of the logged in user
 
@@ -115,6 +112,10 @@ app.post('/api/friend/remove', controller.removeFriend)
 // Removes a friend from the logged in user's friend list
 // Sends a status of 200 with the updated list of user IDs that are friends of the logged in user
 
+app.get('/api/profile/list', controller.getProfileList)
+// This endpoint should handle the pagination of users.
+// Hint: Query offsets and limits.
+
 
 // ===== User Endpoints === //
 
@@ -124,18 +125,6 @@ app.put('/api/profile/update', controller.updateUser)
 //Updates a user's attribute(s).
 //Sends a status of 200 and the updated user object
 
-app.get('/api/profile/list', controller.getProfileList)
-// returns a list of 24 users
-// This endpoint should count how many users there are, not including the logged in user.
-// This endpoint should calculate how many available pages there are for pagination.
-//Hint: Total user count. 24 users per page.
-// This endpoint should handle the pagination of users.
-// Hint: Query offsets and limits.
-// Sends a status of 200 with the user count, number of pagination pages, and 24 user objects
-
-// app.get('/api/profile/search', controller.searchProfile)
-// Return all users that meet the search criteria.
-// Sends a status of 200 and all the users that meet the criteria
 
 
 // ===== Recommended Endpoints ===== //
