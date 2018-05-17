@@ -155,6 +155,7 @@ app.get('/api/recommended', controller.getRecommended)
 app.get('/auth/logout', (req, res)=> {
     req.logOut();
     res.redirect('http://localhost:3000/#/')
+    console.log(req.session, 'art thou logged out?')
 })
 
 massive(process.env.CONNECTION_STRING).then(db => {

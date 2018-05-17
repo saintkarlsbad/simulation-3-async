@@ -33,9 +33,9 @@ class Search extends Component {
     componentWillMount() {
         axios.get('/auth/authenticated').then(user => {
             this.setState({
-               userData: user.data
+                userData: user.data
             })
-        }).catch( response => {
+        }).catch(response => {
             console.log('cannot load search')
         })
 
@@ -45,13 +45,6 @@ class Search extends Component {
             })
         })
 
-        // all friends where user_id = $1(current user)
-        axios.get('/api/friend/list').then(res => {
-            let friendList = res.data
-            this.setState({
-                allFriendsList: friendList
-            })
-        })
 
         // every profile excluding current user
         axios.get('/api/profile/list').then(res => {
@@ -98,30 +91,21 @@ class Search extends Component {
         })
     }
 
-    // addFriend(friendId) {
-
-    //     axios.post('/api/friend/add', friendId).then(response => {
-    //     }
-
-    //     ).catch(response => {
-    //         console.log('no friend 4 u')
-    //     })
-    // }
-
     addFriend(friendId) {
         axios.post('/api/friend/add', { friendId }).then(res => {
             axios.get('/api/profile/list').then(res => {
-                this.setState({ allProfiles: res.data })})
-        }).catch( response => {
+                this.setState({ allProfiles: res.data })
+            })
+        }).catch(response => {
             console.log('no friend 4 u')
         })
     }
 
     removeFriend(friendId) {
 
-        axios.post('/api/friend/remove', {friendId}).then(res => {
+        axios.post('/api/friend/remove', { friendId }).then(res => {
             axios.get('/api/profile/list').then(res => {
-               this.setState({allProfiles: res.data}) 
+                this.setState({ allProfiles: res.data })
             })
         }).catch(response => {
             console.log('friends forever sorry')
@@ -136,31 +120,13 @@ class Search extends Component {
         let profiles = allProfiles.slice(indexOfFirstUser, indexOfLastUser);
         let alltheFriends = this.state.allFriendsList
 
-        let friendsMap = alltheFriends.map((friends, index) => {
-            if (this.state.searchResults === 'blank') {
-                console.log(friends)
-                return (
-                    <div key={index} className='profile_content'>
-                        <div >
-                            <span>{friends.first}</span>
-                            <span>{friends.last}</span>
-                        </div>
-                        {this.state.friendMates === friends.friend_id ?
-                            <button onClick={() => { this.removeFriend(friends.id) }} className='remove_btn black-btn'>Remove Friend</button> :
-                            <button onClick={() => { this.addFriend(friends.id) }} className='add_btn orange-btn'>Add Friend</button>
-                        }
-                    </div>
-                )
-            }
-        })
-
         let profilesMap = profiles.map((users, index) => {
             //console.log(users)
             if (this.state.searchResults === 'blank') {
                 return (
                     <div key={index} className='profile_content content-container'>
-                        <div className='list_left'> 
-                        <img src={`${users.img}`} width='100px' alt='profile' />
+                        <div className='list_left'>
+                            <img src={`${users.img}`} width='100px' alt='profile' />
                         </div>
 
                         <div className='profile_name'>
@@ -203,7 +169,7 @@ class Search extends Component {
                             <br />
                             {users.last}
                         </div>
-                        {this.state.friendMates === users.friend_id ?
+                        {this.state.friendMates === users.user_id ?
                             <button onClick={() => { this.removeFriend(users.id) }} className='add_btn orange-btn'>Remove Friend</button> :
                             <button onClick={() => { this.addFriend(users.id) }} className='add_btn orange-btn'>Add Friend</button>
                         }
@@ -231,7 +197,7 @@ class Search extends Component {
         })
 
         return (
-            
+
             <div className='search_container'>
                 <Header page='Search' />
                 <div className='search_parent'>
@@ -244,13 +210,17 @@ class Search extends Component {
                             </select>
                             <input onChange={(e) => { this.handleInput(e.target.value) }} className='input open-sans' />
                             <button className='search grey-btn' onClick={() => this.handleSearchButton(this.state.inputValue)}> Search </button>
-                            <button onClick={() => {this.reset()}} className='complete black-btn'> Reset </button>
+                            <button onClick={() => { this.reset() }} className='complete black-btn'> Reset </button>
                         </div>
 
                         <div className='child_bottom'>
-                            {profilesMap} 
+                            {profilesMap}
                         </div>
-                        <div>{showPages}</div>
+                        <div className='pages_div'>
+                            <div className='numbers_div'>
+                                {showPages}
+                            </div>
+                        </div>
                     </div>
                 </div>
 

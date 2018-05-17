@@ -84,3 +84,25 @@
     margin-right: 10px;
     display: block;
 }
+
+.pages_div {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    margin-bottom: 25px;
+}
+
+.numbers_div {
+    background-image: linear-gradient(97deg, #ff7a6e, #ff9770);
+    width: 80%;
+    height: 100%;
+    border-radius: 2px;
+    box-sizing: border-box;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
